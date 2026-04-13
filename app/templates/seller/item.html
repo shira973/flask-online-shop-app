@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.name }} — {{ seller.business_name }}{% endblock %}
+
+{% block content %}
+<div x-data="sellerItem()" class="py-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a :href="'/seller/{{ seller.id }}'">Back to Dashboard</a></li>
+            <li class="breadcrumb-item active" x-text="item.name"></li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <!-- Item Details Card -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-box"></i> Item Details
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Item Name</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-lg" x-model="item.name" id="itemName">
+                            <button class="btn btn-outline-primary" @click="saveField('name')">
+                                <i class="bi bi-check-lg"></i> Save
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Description</label>
+                        <div class="input-group">
+                            <textarea class="form-control" rows="4" x-model="item.description" id="itemDesc"></textarea>
+                        </div>
+                        <div class="mt-2">
+                            <button class="btn btn-outline-primary btn-sm" @click="saveField('description')">
+                                <i class="bi bi-check-lg"></i> Save Description
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Price ($)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" step="0.01" min="0.01" class="form-control form-control-lg" x-model="item.price" id="itemPrice">
+                            <button class="btn btn-outline-primary" @click="saveField('price')">
+                                <i class="bi bi-check-lg"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <i class="bi bi-info-circle"></i> Item Summary
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="text-muted">Item ID</span>
+                            <span x-text="item.id"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="text-muted">Name</span>
+                            <span x-text="item.name"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="text-muted">Price</span>
+                            <span class="ds-price">$ <span x-text="parseFloat(item.price).toFixed(2)"></span></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="text-muted">Seller</span>
+                            <span>{{ seller.business_name }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-link-45deg"></i> Customer View</h6>
+                    <a :href="'/item/' + item.id" class="btn btn-sm btn-outline-success w-100" target="_blank">
+                        <i class="bi bi-eye"></i> View as Customer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function sellerItem() {
+    return {
+        item: {{ item | tojson }},
+
+        async saveField(field) {
+            const payload = {};
+            payload[field] = this.item[field];
+
+            const res = await fetch('/api/seller/items/{{ item.id }}', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                this.item = data.data;
+                showToast('Updated', `${field} updated successfully`);
+            } else {
+                showToast('Error', data.message, 'error');
+            }
+        }
+    }
+}
+</script>
+{% endblock %}

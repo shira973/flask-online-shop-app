@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Shops — Digital Shop{% endblock %}
+
+{% block content %}
+<div class="py-3">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold"><i class="bi bi-shop"></i> Digital Shop</h1>
+        <p class="lead text-muted">Browse local businesses and shop online</p>
+    </div>
+
+    {% if sellers|length == 0 %}
+    <div class="alert alert-info text-center">
+        <i class="bi bi-info-circle"></i> No businesses available yet. Check back soon!
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        {% for seller in sellers %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card ds-card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">{{ seller.business_name }}</h5>
+                        {% if seller.is_open %}
+                        <span class="badge ds-badge-open">Open</span>
+                        {% else %}
+                        <span class="badge ds-badge-closed">Closed</span>
+                        {% endif %}
+                    </div>
+                    {% if seller.contact_details %}
+                    <p class="text-muted small mb-2">
+                        <i class="bi bi-telephone"></i> {{ seller.contact_details }}
+                    </p>
+                    {% endif %}
+                    <p class="text-muted">
+                        <i class="bi bi-box"></i> {{ seller.items|length }} item{{ 's' if seller.items|length != 1 }}
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="/business/{{ seller.id }}" class="btn btn-primary w-100">
+                        <i class="bi bi-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
