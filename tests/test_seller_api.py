@@ -2,6 +2,42 @@
 import json
 
 
+class TestCreateSeller:
+    def test_create_seller_success(self, client):
+        res = client.post("/api/seller", json={
+            "business_name": "New Seller Shop",
+            "contact_details": "seller@test.com",
+        })
+        assert res.status_code == 201
+        data = res.get_json()
+        assert data["success"] is True
+        assert data["data"]["business_name"] == "New Seller Shop"
+        assert data["data"]["contact_details"] == "seller@test.com"
+        assert data["data"]["is_open"] is True
+
+    def test_create_seller_defaults_open(self, client):
+        res = client.post("/api/seller", json={
+            "business_name": "Default Open Shop",
+        })
+        assert res.status_code == 201
+        data = res.get_json()
+        assert data["data"]["is_open"] is True
+
+    def test_create_seller_missing_business_name(self, client):
+        res = client.post("/api/seller", json={
+            "contact_details": "seller@test.com",
+        })
+        assert res.status_code == 400
+        data = res.get_json()
+        assert data["success"] is False
+
+    def test_create_seller_no_data(self, client):
+        res = client.post("/api/seller", content_type="application/json")
+        assert res.status_code == 400
+        data = res.get_json()
+        assert data["success"] is False
+
+
 class TestCreateItem:
     def test_create_item_success(self, client, sample_seller):
         res = client.post("/api/seller/items", json={

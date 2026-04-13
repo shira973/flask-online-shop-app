@@ -3,11 +3,35 @@ from app import db
 from app.models import Seller, Item
 from app.seller import seller_bp
 
+@seller_bp.route("/api/seller", methods=["POST"])
+def create_seller():
+    """Create a new seller. Expects: business_name, contact_details, is_open"""
+    data = request.get_json()
+    if not data:
+        return jsonify({"success": False, "message": "No JSON data provided"}), 400
+
+    business_name = data.get("business_name")
+    if not business_name:
+        return jsonify({"success": False, "message": "business_name is required"}), 400
+
+    try:
+        seller = Seller(
+            business_name=business_name,
+            contact_details=data.get("contact_details"),
+            is_open=data.get("is_open", True),
+        )
+        db.session.add(seller)
+        db.session.commit()
+
+        return jsonify({"success": True, "data": seller.to_dict(), "message": "Seller created"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "message": str(e)}), 500
 
 @seller_bp.route("/api/seller/items", methods=["POST"])
 def create_item():
     """Create a new item. Expects: seller_id, name, description, price, contact_details"""
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if not data:
         return jsonify({"success": False, "message": "No JSON data provided"}), 400
 
@@ -50,7 +74,7 @@ def update_item(item_id):
     if not item:
         return jsonify({"success": False, "message": "Item not found"}), 404
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if not data:
         return jsonify({"success": False, "message": "No JSON data provided"}), 400
 
@@ -98,7 +122,7 @@ def get_item(item_id):
 @seller_bp.route("/api/seller/toggle-shop", methods=["POST"])
 def toggle_shop():
     """Toggle shop open/close status. Expects: seller_id"""
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if not data or not data.get("seller_id"):
         return jsonify({"success": False, "message": "seller_id is required"}), 400
 
@@ -124,7 +148,7 @@ def toggle_shop():
 @seller_bp.route("/api/seller/business", methods=["PATCH"])
 def update_business():
     """Update business name. Expects: seller_id, business_name"""
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if not data or not data.get("seller_id"):
         return jsonify({"success": False, "message": "seller_id is required"}), 400
 
