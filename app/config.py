@@ -14,7 +14,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL",
-        "mysql+pymysql://u1056p1580_user:kXxnGYarFvxkLQ6Y@127.0.0.1:3306/u1056p1580_digital_shop",
+        "mysql+pymysql://achri:mysql@127.0.0.1:3306/u1056p1580_digital_shop",
     )
 
 

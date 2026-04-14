@@ -40,7 +40,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ item.name }}</h5>
                     <p class="card-text text-muted">{{ item.description or 'No description available' }}</p>
-                    <p class="ds-price mb-0">${{ "%.2f"|format(item.price) }}</p>
+                    <p class="ds-price mb-0">₹{{ "%.2f"|format(item.price) }}</p>
                 </div>
                 <div class="card-footer bg-transparent">
                     <a href="/item/{{ item.id }}" class="btn btn-outline-primary w-100">

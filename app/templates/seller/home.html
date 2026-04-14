@@ -74,7 +74,7 @@
                     <div class="card-body">
                         <h5 class="card-title" x-text="item.name"></h5>
                         <p class="card-text text-muted" x-text="item.description || 'No description'"></p>
-                        <p class="ds-price mb-0">$ <span x-text="parseFloat(item.price).toFixed(2)"></span></p>
+                        <p class="ds-price mb-0">₹ <span x-text="parseFloat(item.price).toFixed(2)"></span></p>
                     </div>
                     <div class="card-footer bg-transparent">
                         <a :href="'/seller/{{ seller.id }}/items/' + item.id" class="btn btn-sm btn-outline-primary">
