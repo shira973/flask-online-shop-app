@@ -18,7 +18,7 @@
             <div class="card shadow-sm">
                 <div class="card-body p-4">
                     <h1 class="card-title">{{ item.name }}</h1>
-                    <span class="ds-price display-6">$ {{ "%.2f"|format(item.price) }}</span>
+                    <span class="ds-price display-6">₹ {{ "%.2f"|format(item.price) }}</span>
                     <hr>
                     <h5 class="text-muted">Description</h5>
                     <p class="lead">{{ item.description or 'No description available' }}</p>
@@ -68,7 +68,7 @@
                         </div>
 
                         <div class="alert alert-info">
-                            <strong>Total:</strong> $ <span x-text="(parseFloat({{ item.price }}) * parseInt(order.quantity || 1)).toFixed(2)"></span>
+                            <strong>Total:</strong> ₹ <span x-text="(parseFloat({{ item.price }}) * parseInt(order.quantity || 1)).toFixed(2)"></span>
                         </div>
 
                         <button type="submit" class="btn btn-success w-100 btn-lg">
